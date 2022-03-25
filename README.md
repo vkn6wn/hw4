@@ -1,2 +1,2 @@
-# CS4640_HW4
+# hw4
 Partnered with Sharon
