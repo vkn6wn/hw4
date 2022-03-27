@@ -56,11 +56,7 @@ class WordGameController {
     // Display the question template (and handle question logic)
     public function question() {
         // set user information for the page from the cookie
-        global $user; 
-        $user = [
-            "name" => $_COOKIE["name"],
-            "score" => "0",
-        ];
+        global $user;
         if(!isset($user)){
             $user = 'Variable name is not set';
             }
@@ -73,7 +69,7 @@ class WordGameController {
         // load the question
         $wordVar = file_get_contents("wordlist.txt");
         $wordBank = explode("\n",$wordVar);
-        $randIndex = rand(0, strlen($wordBank));
+        $randIndex = rand(0, strlen());
 
         $toGuess = $wordBank[$randIndex];
         $progress = "-----";
