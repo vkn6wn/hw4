@@ -21,6 +21,8 @@
                     <h2>Question</h2>
                     <p><?=$question["correct_answer"]?></p>
                     <input type="hidden" name="questionid" value="<?=$question["id"]?> "/>
+                    <h2>My Guesses</h2> 
+                    <p><?=$guess?></p>
                     </div>
                     <?=$message?>
                     <div class="h-10 p-5 mb-3">
