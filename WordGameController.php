@@ -46,11 +46,25 @@ class WordGameController {
 
     // Load a question from the API
     private function loadQuestion() {
-        $triviaData = json_decode(
-            file_get_contents("https://opentdb.com/api.php?amount=1&category=26&difficulty=easy&type=multiple")
-            , true);
-        // Return the question
-        return $triviaData["results"][0];
+        $wordVar = file_get_contents("wordlist.txt");
+        $wordBank = explode("\n",$wordVar);
+        $randIndex = rand(0, count($wordBank));
+
+        $toGuess = $wordBank[$randIndex];
+        $progress = "________";
+        // for ($i = 0; $i <= strlen($toGuess); $i++)
+        //     $progress .= "-";
+        $question = [
+            "question" => $progress,
+            "correct_answer" => $toGuess
+        ];
+        
+        return $question;
+        // $triviaData = json_decode(
+        //     file_get_contents("https://opentdb.com/api.php?amount=1&category=26&difficulty=easy&type=multiple")
+        //     , true);
+        // // Return the question
+        // return $triviaData["results"][0];
     }
 
     // Display the question template (and handle question logic)
@@ -67,15 +81,11 @@ class WordGameController {
         ];
 
         // load the question
-        $wordVar = file_get_contents("wordlist.txt");
-        $wordBank = explode("\n",$wordVar);
-        $randIndex = rand(0, strlen());
+        $question = $this->loadQuestion();
 
-        $toGuess = $wordBank[$randIndex];
-        $progress = "-----";
         $guess;
 
-        $question = $this->loadQuestion();
+        
         if ($question == null) {
             die("No questions available");
         }
@@ -86,7 +96,7 @@ class WordGameController {
         if (isset($_POST["answer"])) {
             $answer = $_POST["answer"];
             
-            if ($_COOKIE["answer"] == $answer) {
+            if ($_COOKIE["answer"] === $answer) {
                 // user answered correctly -- perhaps we should also be better about how we
                 // verify their answers, perhaps use strtolower() to compare lower case only.
                 $message = "<div class='alert alert-success'><b>$answer</b> was correct!</div>";
@@ -96,7 +106,22 @@ class WordGameController {
                 // Update the cookie: won't be available until next page load (stored on client)
                 setcookie("score", $_COOKIE["score"] + 10, time() + 3600);
             } else { 
-                $message = "<div class='alert alert-danger'><b>$answer</b> was incorrect! The answer was: {$_COOKIE["answer"]}</div>";
+
+                // compare guess character length to answer
+                $length = "";
+                if (strlen($_COOKIE["answer"]) === strlen($answer)) {
+                    $length = "correct";
+                }
+                elseif (strlen($_COOKIE["answer"]) > strlen($answer)) {
+                    $length = "too short";
+                }
+                elseif (strlen($_COOKIE["answer"]) < strlen($answer)) {
+                    $length = "too long";
+                }
+
+                
+                $message = "<div class='alert alert-danger'><b>$answer</b> was incorrect! Your word length is <b>$length</b>!</div>";
+                // The answer was: {$_COOKIE["answer"]}
             }
             setcookie("correct", "", time() - 3600);
         }

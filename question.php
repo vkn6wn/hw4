@@ -19,7 +19,7 @@
                 <form action="?command=question" method="post">
                     <div class="h-100 p-5 bg-light border rounded-3">
                     <h2>Question</h2>
-                    <p><?=$question["question"]?></p>
+                    <p><?=$question["correct_answer"]?></p>
                     <input type="hidden" name="questionid" value="<?=$question["id"]?> "/>
                     </div>
                     <?=$message?>
