@@ -1,7 +1,7 @@
 <?php
 // Register the autoloader
 spl_autoload_register(function($classname) {
-    include "classes/$classname.php";
+    include "$classname.php";
 });
 
 // Parse the query string for command

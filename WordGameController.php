@@ -1,6 +1,7 @@
 <?php
+$user = [];
 class WordGameController {
-
+    
     private $command;
 
     public function __construct($command) {
@@ -40,7 +41,7 @@ class WordGameController {
             return;
         }
 
-        include "templates/login.php";
+        include "login.php";
     }
 
     // Load a question from the API
@@ -55,6 +56,10 @@ class WordGameController {
     // Display the question template (and handle question logic)
     public function question() {
         // set user information for the page from the cookie
+        global $user;
+        if(!isset($user)){
+            $user = 'Variable name is not set';
+            }
         $user = [
             "name" => $_COOKIE["name"],
             "email" => $_COOKIE["email"],
@@ -62,10 +67,18 @@ class WordGameController {
         ];
 
         // load the question
-        $question = $this->loadQuestion();
-        if ($question == null) {
-            die("No questions available");
-        }
+        $wordVar = file_get_contents("wordlist.txt");
+        $wordBank = explode("\n",$wordVar);
+        $randIndex = rand(0, strlen());
+
+        $toGuess = $wordBank[$randIndex];
+        $progress = "-----";
+        $guess;
+
+        // $question = $this->loadQuestion();
+        // if ($question == null) {
+        //     die("No questions available");
+        // }
 
         $message = "";
 
@@ -91,6 +104,6 @@ class WordGameController {
         // update the question information in cookies
         setcookie("answer", $question["correct_answer"], time() + 3600);
 
-        include("templates/question.php");
+        include("question.php");
     }
 }

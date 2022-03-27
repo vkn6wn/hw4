@@ -12,7 +12,7 @@
         <div class="container" style="margin-top: 15px;">
             <div class="row col-xs-8">
                 <h1>CS4640 Word Game - Get Started</h1>
-                <p> Welcome to our word game!  To get started, enter your name and email.</p>
+                <p> Welcome to our word game! To get started, enter your name and email.</p>
             </div>
             <div class="row justify-content-center">
                 <div class="col-4">
@@ -34,8 +34,8 @@
                         <label for="password" class="form-label">Password</label>
                         <input type="password" class="form-control" id="password" name="password"/>
                     </div> -->
-                    <div class="text-center">                
-                    <button type="submit" class="btn btn-primary">Play Trivia</button>
+                    <div class="text-center">  
+                        <a class="btn btn-primary" href="question.php" role="button">Play Trivia</a>
                     </div>
                 </form>
                 </div>
