@@ -91,10 +91,13 @@ class WordGameController {
         }
 
         $message = "";
+        $arr = [];
 
         // if the user submitted an answer, check it
         if (isset($_POST["answer"])) {
             $answer = $_POST["answer"];
+            $arr[] = $answer;
+            $guess = implode(', ', $arr);
             
             if ($_COOKIE["answer"] === $answer) {
                 // user answered correctly -- perhaps we should also be better about how we
@@ -106,6 +109,25 @@ class WordGameController {
                 // Update the cookie: won't be available until next page load (stored on client)
                 setcookie("score", $_COOKIE["score"] + 10, time() + 3600);
             } else { 
+
+                $correct_position = 0;
+                $in_word = false;
+                $count_in_word = 0;
+                $present = [];
+                $present_implode = implode(", ", $present);
+
+                // // say how many characters in their guess were in the correct position
+                // for ($i = 0; $i <= strlen($answer); $i++) { // iterate through correct word
+                //     for ($j = 0; $j <= strlen($_COOKIE["answer"]); $j++) {  // iterate through user guess
+                        if ($answer[1] === $_COOKIE["answer"][1]) {
+                            $in_word = true;
+                        }
+                    // }
+                    if ($in_word) {
+                        $count_in_word += 1;
+                        $present[] = $answer[1];
+                    }
+                // }
 
                 // compare guess character length to answer
                 $length = "";
@@ -120,7 +142,8 @@ class WordGameController {
                 }
 
                 
-                $message = "<div class='alert alert-danger'><b>$answer</b> was incorrect! Your word length is <b>$length</b>!</div>";
+                // $message = "<div class='alert alert-danger'><b>$answer</b> was incorrect! Your word length is <b>$length</b>!</div>";
+                $message = "<div class='alert alert-danger'><b>$answer</b> was incorrect! The letters <b>$count_in_word</b> in your guess are present in the correct answer! Your word length is <b>$length</b>!</div>";
                 // The answer was: {$_COOKIE["answer"]}
             }
             setcookie("correct", "", time() - 3600);
