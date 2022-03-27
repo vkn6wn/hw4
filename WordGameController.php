@@ -70,11 +70,7 @@ class WordGameController {
     // Display the question template (and handle question logic)
     public function question() {
         // set user information for the page from the cookie
-        global $user; 
-        $user = [
-            "name" => $_COOKIE["name"],
-            "score" => "0",
-        ];
+        global $user;
         if(!isset($user)){
             $user = 'Variable name is not set';
             }
@@ -86,7 +82,6 @@ class WordGameController {
 
         // load the question
         $question = $this->loadQuestion();
-
 
         $guess;
 
