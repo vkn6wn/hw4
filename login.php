@@ -35,7 +35,7 @@
                         <input type="password" class="form-control" id="password" name="password"/>
                     </div> -->
                     <div class="text-center">  
-                        <a class="btn btn-primary" href="question.php" role="button">Play Trivia</a>
+                        <button type="submit" class="btn btn-primary">Play Trivia</button>
                     </div>
                 </form>
                 </div>

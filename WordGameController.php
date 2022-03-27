@@ -75,10 +75,10 @@ class WordGameController {
         $progress = "-----";
         $guess;
 
-        // $question = $this->loadQuestion();
-        // if ($question == null) {
-        //     die("No questions available");
-        // }
+        $question = $this->loadQuestion();
+        if ($question == null) {
+            die("No questions available");
+        }
 
         $message = "";
 
