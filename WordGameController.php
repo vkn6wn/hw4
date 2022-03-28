@@ -119,10 +119,6 @@ class WordGameController {
             $user["num_guesses"] = $_SESSION["num_guesses"]; 
             $answer = strtolower($_POST["answer"]);
             $answer_original = $_POST["answer"];
-
-            $_SESSION["guesses"][] = $answer_original;
-            $user["guesses"] = $_SESSION["guesses"]; 
-            $guess = implode(', ', $_SESSION["guesses"]);
             
             if ($_SESSION["answer"] === $answer) {
                 // user answered correctly -- perhaps we should also be better about how we
@@ -183,12 +179,18 @@ class WordGameController {
                 $green_letters = array_unique($green_letters, SORT_STRING);
                 $count_correct_position = count($green_letters);
                 $green_letters_implode = implode(", ", $green_letters);
-                $test_implode = implode(", ", $test);
+                $test_implode = implode("\n", $test);
                 // $message = "<div class='alert alert-danger'><b>$answer</b> was incorrect! Your word length is <b>$length</b>!</div>";
-                
-                $feedback = "(Feedback: <b>$count_in_word</b> characters [<b>$present_implode</b>] in your guess were in the target word.
+
+                $feedback = " (Feedback: <b>$count_in_word</b> characters [<b>$present_implode</b>] in your guess were in the target word.
                 <b>$count_correct_position</b> characters [<b>$green_letters_implode</b>] in your guess were in the correct position.
                 Your word length is <b>$length</b>.)";
+
+                // $_SESSION["guesses"] += array($answer_original => $feedback);
+                $concat_ans_feedback = $answer_original.$feedback;
+                $_SESSION["guesses"][] = $concat_ans_feedback;
+                $user["guesses"] = $_SESSION["guesses"]; 
+                $guess = implode(", ", $_SESSION["guesses"]);
 
                 $message = "<div class='alert alert-danger'><b>$answer_original</b> was incorrect!</div>";
                 // The answer was: {$_COOKIE["answer"]}
