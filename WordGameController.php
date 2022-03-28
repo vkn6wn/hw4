@@ -110,9 +110,11 @@ class WordGameController {
                 $message = "<div class='alert alert-success'><b>$answer_original</b> was correct!</div>";
 
                 // Update the score
-                $user["score"] += 10;  
-                // Update the cookie: won't be available until next page load (stored on client)
-                setcookie("score", $_COOKIE["score"] + 10, time() + 3600);
+                $_SESSION["score"] += 10;
+                $user["score"] = $_SESSION["score"];  
+                // // Update the cookie: won't be available until next page load (stored on client)
+                // setcookie("score", $_SESSION["score"] + 10, time() + 3600);
+              
             } else { 
 
                 $count_correct_position = 0;
