@@ -15,10 +15,10 @@ class WordGameController {
                 break;
             case "gameover":
                 $this->gameOver();
+                break;
             case "logout":
                 $this->destroySession();
             case "login":
-            default:
                 $this->login();
                 break;
         }
@@ -215,6 +215,11 @@ class WordGameController {
             "guesses" => $_SESSION["guesses"],
             "answer" => $_SESSION["answer"]
         ];
+
+        $wordBank = $_SESSION["wordbank"];
+        $ri = rand(0, count($wordBank));
+        $_SESSION["question_id"] = $ri;
+
 
         include("gameover.php");
     }
