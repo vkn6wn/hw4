@@ -13,10 +13,12 @@ class WordGameController {
             case "question":
                 $this->question();
                 break;
+            case "gameover":
+                $this->gameOver();
+                break;
             case "logout":
                 $this->destroySession();
             case "login":
-            default:
                 $this->login();
                 break;
         }
@@ -81,7 +83,6 @@ class WordGameController {
 
     // Display the question template (and handle question logic)
     public function question() {
-        // set user information for the page from the cookie
         global $user;
         if(!isset($user)){
             $user = 'Variable name is not set';
@@ -91,13 +92,15 @@ class WordGameController {
             "email" => $_SESSION["email"],
             "score" => $_SESSION["score"],
             "num_guesses" => $_SESSION["num_guesses"],
-            "guesses" => $_SESSION["guesses"]
+            "guesses" => $_SESSION["guesses"],
+            "question" => ""
         ];
 
         // load the question
         $question = $this->loadQuestion();
         $_SESSION["question"] = $question["question"];
         $_SESSION["answer"] = $question["correct_answer"];
+        $user["question"] = $_SESSION["answer"];
 
         $guess = "";
         $feedback = "";
@@ -127,7 +130,8 @@ class WordGameController {
 
                 // Update the score
                 $_SESSION["score"] += 10;
-                $user["score"] = $_SESSION["score"];  
+                $user["score"] = $_SESSION["score"];
+                header('refresh: 2; ?command=gameover');  
                 // // Update the cookie: won't be available until next page load (stored on client)
                 // setcookie("score", $_SESSION["score"] + 10, time() + 3600);
               
@@ -205,6 +209,20 @@ class WordGameController {
     }
 
     public function gameOver() {
-        
+        $user = [
+            "name" => $_SESSION["name"],
+            "email" => $_SESSION["email"],
+            "score" => $_SESSION["score"],
+            "num_guesses" => $_SESSION["num_guesses"],
+            "guesses" => $_SESSION["guesses"],
+            "answer" => $_SESSION["answer"]
+        ];
+
+        $wordBank = $_SESSION["wordbank"];
+        $ri = rand(0, count($wordBank));
+        $_SESSION["question_id"] = $ri;
+
+
+        include("gameover.php");
     }
 }
