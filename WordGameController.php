@@ -15,8 +15,6 @@ class WordGameController {
                 break;
             case "logout":
                 $this->destroyCookies();
-            case "quit":
-                $this->gameover();
             case "login":
             default:
                 $this->login();
@@ -44,10 +42,6 @@ class WordGameController {
         }
 
         include "login.php";
-    }
-
-    public function gameover() {
-        include "gameover.php";
     }
 
     // Load a question from the API

@@ -21,7 +21,7 @@
                 <form action="?command=question" method="post">
                     <div class="h-100 p-5 bg-light border rounded-3">
                     <h2>Question</h2>
-                    <p><?=$question["correct_answer"]?></p>
+                    <p><?=$_SESSION["answer"]?></p>
                     <input type="hidden" name="questionid" value="<?=$question["id"]?> "/>
                     <h2>My Guesses</h2> 
                     <p><?=$guess?> <?=$feedback?></p>
