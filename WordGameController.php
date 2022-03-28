@@ -15,6 +15,8 @@ class WordGameController {
                 break;
             case "logout":
                 $this->destroyCookies();
+            case "quit":
+                $this->gameover();
             case "login":
             default:
                 $this->login();
@@ -42,6 +44,10 @@ class WordGameController {
         }
 
         include "login.php";
+    }
+
+    public function gameover() {
+        include "gameover.php";
     }
 
     // Load a question from the API
@@ -84,6 +90,7 @@ class WordGameController {
         $question = $this->loadQuestion();
 
         $guess;
+        $feedback;
 
         
         if ($question == null) {
@@ -162,10 +169,12 @@ class WordGameController {
                 $green_letters_implode = implode(", ", $green_letters);
                 $test_implode = implode(", ", $test);
                 // $message = "<div class='alert alert-danger'><b>$answer</b> was incorrect! Your word length is <b>$length</b>!</div>";
-                $message = "<div class='alert alert-danger'><b>$answer_original</b> was incorrect!
-                <b>$count_in_word</b> characters in your guess were in the target word.
-                <b>$count_correct_position</b> characters in your guess were in the correct position.
-                Your word length is <b>$length</b>.</div>";
+                
+                $feedback = "(Feedback: <b>$count_in_word</b> characters [<b>$present_implode</b>] in your guess were in the target word.
+                <b>$count_correct_position</b> characters [<b>$green_letters_implode</b>] in your guess were in the correct position.
+                Your word length is <b>$length</b>.)";
+
+                $message = "<div class='alert alert-danger'><b>$answer_original</b> was incorrect!</div>";
                 // The answer was: {$_COOKIE["answer"]}
             }
             setcookie("correct", "", time() - 3600);
