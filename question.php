@@ -22,7 +22,8 @@
                 <form action="?command=question" method="post">
                     <div class="h-100 p-5 bg-light border rounded-3">
                     <h2>What is the word?</h2>
-                    <p>Random Word: ___________</p>
+                    <p> <?= $_SESSION["answer"] ?> </p>
+                    <!-- <p>Random Word: ___________</p> -->
                     <input type="hidden" name="questionid" value="<?=$question["id"]?> "/>
                     <h2>My Guesses</h2> 
                     <p><?=$guess?></p>
