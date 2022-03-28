@@ -13,8 +13,8 @@
             <div class="row col-xs-8">
                 <h1>CS4640 Wordle Game</h1>
                 <h3>Hello, <?=$user["name"]?>! Score: <?=$user["score"]?></h3>
-                <h4>Current number of guesses: </h3>
-                <h4>Email: <?=$user["email"]?></h3>\
+                <h4>Current number of guesses: <?=$user["num_guesses"]?></h3>
+                <h4>Email: <?=$user["email"]?></h3>
             </div>
             <div class="row">
                 <div class="col-xs-8 mx-auto">

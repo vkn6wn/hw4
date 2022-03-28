@@ -14,7 +14,7 @@ class WordGameController {
                 $this->question();
                 break;
             case "logout":
-                $this->destroyCookies();
+                $this->destroySession();
             case "login":
             default:
                 $this->login();
@@ -23,20 +23,32 @@ class WordGameController {
     }
 
     // Clear all the cookies that we've set
-    private function destroyCookies() {          
-        setcookie("correct", "", time() - 3600);
-        setcookie("name", "", time() - 3600);
-        setcookie("email", "", time() - 3600);
-        setcookie("score", "", time() - 3600);
+    private function destroySession() {          
+        session_unset();
+        session_destroy();   
+        // setcookie("correct", "", time() - 3600);
+        // setcookie("name", "", time() - 3600);
+        // setcookie("email", "", time() - 3600);
+        // setcookie("score", "", time() - 3600);
     }
     
 
     // Display the login page (and handle login logic)
     public function login() {
         if (isset($_POST["email"]) && !empty($_POST["email"])) { /// validate the email coming in
-            setcookie("name", $_POST["name"], time() + 3600);
-            setcookie("email", $_POST["email"], time() + 3600);
-            setcookie("score", 0, time() + 3600);
+            $_SESSION["name"] = $_POST["name"];
+            $_SESSION["email"] = $_POST["email"];
+            $_SESSION["score"] = 0;
+            $_SESSION["num_guesses"] = 0;
+            $_SESSION["guesses"] = [];
+            $wordVar = file_get_contents("wordlist.txt");
+            $wordBank = explode("\n",$wordVar);
+            $randIndex = rand(0, count($wordBank));
+            $_SESSION["question_id"] = $randIndex;
+            $_SESSION["wordbank"] = $wordBank;
+            // setcookie("name", $_POST["name"], time() + 3600);
+            // setcookie("email", $_POST["email"], time() + 3600);
+            // setcookie("score", 0, time() + 3600);
             header("Location: ?command=question");
             return;
         }
@@ -46,11 +58,11 @@ class WordGameController {
 
     // Load a question from the API
     private function loadQuestion() {
-        $wordVar = file_get_contents("wordlist.txt");
-        $wordBank = explode("\n",$wordVar);
-        $randIndex = rand(0, count($wordBank));
-
-        $toGuess = $wordBank[$randIndex];
+        // $wordVar = file_get_contents("wordlist.txt");
+        // $wordBank = explode("\n",$wordVar);
+        // $randIndex = rand(0, count($wordBank));
+        $wb = $_SESSION["wordbank"];
+        $toGuess = $wb[$_SESSION["question_id"]];
         $progress = "________";
         // for ($i = 0; $i <= strlen($toGuess); $i++)
         //     $progress .= "-";
@@ -75,16 +87,20 @@ class WordGameController {
             $user = 'Variable name is not set';
             }
         $user = [
-            "name" => $_COOKIE["name"],
-            "email" => $_COOKIE["email"],
-            "score" => $_COOKIE["score"]
+            "name" => $_SESSION["name"],
+            "email" => $_SESSION["email"],
+            "score" => $_SESSION["score"],
+            "num_guesses" => $_SESSION["num_guesses"],
+            "guesses" => $_SESSION["guesses"]
         ];
 
         // load the question
         $question = $this->loadQuestion();
+        $_SESSION["question"] = $question["question"];
+        $_SESSION["answer"] = $question["correct_answer"];
 
-        $guess;
-        $feedback;
+        $guess = "";
+        $feedback = "";
 
         
         if ($question == null) {
@@ -99,12 +115,16 @@ class WordGameController {
 
         // if the user submitted an answer, check it
         if (isset($_POST["answer"])) {
+            $_SESSION["num_guesses"] += 1;
+            $user["num_guesses"] = $_SESSION["num_guesses"]; 
             $answer = strtolower($_POST["answer"]);
             $answer_original = $_POST["answer"];
-            $arr[] = $answer_original;
-            $guess = implode(', ', $arr);
+
+            $_SESSION["guesses"][] = $answer_original;
+            $user["guesses"] = $_SESSION["guesses"]; 
+            $guess = implode(', ', $_SESSION["guesses"]);
             
-            if ($_COOKIE["answer"] === $answer) {
+            if ($_SESSION["answer"] === $answer) {
                 // user answered correctly -- perhaps we should also be better about how we
                 // verify their answers, perhaps use strtolower() to compare lower case only.
                 $message = "<div class='alert alert-success'><b>$answer_original</b> was correct!</div>";
@@ -125,8 +145,8 @@ class WordGameController {
 
                 // say how many characters in their guess were in the correct position
                 for ($i = 0; $i < strlen($answer); $i++) { // iterate through user guess
-                    for ($j = 0; $j < strlen($_COOKIE["answer"]); $j++) {  // iterate through correct word
-                        if ($answer[$i] === ($_COOKIE["answer"])[$j]) {
+                    for ($j = 0; $j < strlen($_SESSION["answer"]); $j++) {  // iterate through correct word
+                        if ($answer[$i] === ($_SESSION["answer"])[$j]) {
                             $in_word = true;
                             if ($i === $j) {
                                 $in_right_place = true;
@@ -146,13 +166,13 @@ class WordGameController {
 
                 // compare guess character length to answer
                 $length = "";
-                if (strlen($_COOKIE["answer"]) === strlen($answer)) {
+                if (strlen($_SESSION["answer"]) === strlen($answer)) {
                     $length = "correct";
                 }
-                elseif (strlen($_COOKIE["answer"]) > strlen($answer)) {
+                elseif (strlen($_SESSION["answer"]) > strlen($answer)) {
                     $length = "too short";
                 }
-                elseif (strlen($_COOKIE["answer"]) < strlen($answer)) {
+                elseif (strlen($_SESSION["answer"]) < strlen($answer)) {
                     $length = "too long";
                 }
 
@@ -173,12 +193,16 @@ class WordGameController {
                 $message = "<div class='alert alert-danger'><b>$answer_original</b> was incorrect!</div>";
                 // The answer was: {$_COOKIE["answer"]}
             }
-            setcookie("correct", "", time() - 3600);
+            // setcookie("correct", "", time() - 3600);
         }
 
         // update the question information in cookies
-        setcookie("answer", $question["correct_answer"], time() + 3600);
+        // setcookie("answer", $question["correct_answer"], time() + 3600);
 
         include("question.php");
+    }
+
+    public function gameOver() {
+        
     }
 }
